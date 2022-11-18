@@ -1,33 +1,50 @@
 class Node {
-    constructor(value) {
-        this.value = value
-        this.left = null
-        this.right = null
+    constructor(data, left = null, right = null) {
+        this.data = data
+        this.left = left
+        this.right = right
     }
-
-    changeLeft = node => {
-        this.left = node
-    }
-
-    changeRight = node => {
-        this.right = node
+    insert(data) {
+        if (this.data === data) {
+            throw Error("data already exsits within tree")
+        } else if (this.data > data) {
+            if (this.left) {
+                this.left.insert(data)
+            } else {
+                this.left = new Node(data)
+            }
+        } else if (this.right) {
+            this.right.insert(data)
+        } else {
+            this.right = new Node(data)
+        }
     }
 }
 
 class Tree {
-    constructor(arr) {
-        this.root = arr
+    constructor() {
+        this.root = null
     }
 
     buildTree = arr => {
-        arr = arr.sort(function (a, b) {
-            return a - b
-        })
-
+        // arr = arr.sort(function(a, b) {
+        // return a - b
+        // })
         arr = [...new Set(arr)]
+        const i = Math.floor(arr.length / 2)
+        this.root = new Node(arr[i])
 
-        const root = Math.floor(arr.length / 2)
-        console.log(arr)
+        arr.splice(i, 1)
+        arr.forEach(num => {
+            this.insert(num)
+        })
+    }
+    insert(data) {
+        if (this.root) {
+            this.root.insert(data)
+        } else {
+            this.root = new Node(data)
+        }
     }
 }
 
