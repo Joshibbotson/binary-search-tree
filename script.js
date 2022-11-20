@@ -4,21 +4,6 @@ class Node {
         this.left = left
         this.right = right
     }
-    insert(data) {
-        if (this.data === data) {
-            throw Error("data already exsits within tree")
-        } else if (this.data > data) {
-            if (this.left) {
-                this.left.insert(data)
-            } else {
-                this.left = new Node(data)
-            }
-        } else if (this.right) {
-            this.right.insert(data)
-        } else {
-            this.right = new Node(data)
-        }
-    }
 }
 
 class Tree {
@@ -27,11 +12,13 @@ class Tree {
     }
 
     buildTree = arr => {
+        // uncomment for sorted array//
         // arr = arr.sort(function(a, b) {
         // return a - b
         // })
         arr = [...new Set(arr)]
-        const i = Math.floor(arr.length / 2)
+        const i = Math.ceil(arr.length / 2)
+        console.log(arr[i])
         this.root = new Node(arr[i])
 
         arr.splice(i, 1)
@@ -39,15 +26,65 @@ class Tree {
             this.insert(num)
         })
     }
-    insert(data) {
-        if (this.root) {
-            this.root.insert(data)
-        } else {
-            this.root = new Node(data)
-        }
+
+    insert = (data, node = this.root) => {
+        if (this.root !== null) {
+            if (data > node.data) {
+                if (node.right !== null) {
+                    this.insert(data, node.right)
+                } else if (node.right === null) {
+                    node.right = new Node(data)
+                }
+            }
+            if (data < node.data) {
+                if (node.left !== null) {
+                    this.insert(data, node.left)
+                } else if (node.left === null) {
+                    node.left = new Node(data)
+                }
+            }
+        } else this.root = new Node(data)
+    }
+
+    delete = (data, node = this.root) => {
+        if (this.root !== null) {
+            if (data > node.data) {
+                if (node.right !== null) {
+                    if (node.right === data) {
+                        return (node.right = null)
+                    }
+                } else if (node.right === null) {
+                    this.delete(data, node.right)
+                }
+            }
+            if (data < node.data) {
+                if (node.left !== null) {
+                    if (node.left === data) {
+                        return (node.left = null)
+                    }
+                } else if (node.left === null) {
+                    this.delete(data, node.left)
+                }
+            }
+        } else this.root = new Node(data)
     }
 }
 
 const tree = new Tree()
 
-tree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+tree.buildTree([5, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+
+////////////////////////
+//PRETTY PRINT//
+/////////////////////////
+const prettyPrint = (node, prefix = "", isLeft = true) => {
+    if (node.right !== null) {
+        prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false)
+    }
+    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`)
+    if (node.left !== null) {
+        prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true)
+    }
+}
+
+prettyPrint(tree.root)
