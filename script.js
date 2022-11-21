@@ -18,7 +18,6 @@ class Tree {
         // })
         arr = [...new Set(arr)]
         const i = Math.ceil(arr.length / 2)
-        console.log(arr[i])
         this.root = new Node(arr[i])
 
         arr.splice(i, 1)
@@ -48,26 +47,24 @@ class Tree {
 
     delete = (data, node = this.root) => {
         if (this.root !== null) {
-            if (data > node.data) {
-                if (node.right !== null) {
-                    if (node.right === data) {
-                        return (node.right = null)
+            if (node.data === data) {
+                node.data = null
+            } else {
+                if (data > node.data) {
+                    if (node.right !== null) {
+                        this.delete(data, node.right)
                     }
-                } else if (node.right === null) {
-                    this.delete(data, node.right)
+                }
+                if (data < node.data) {
+                    if (node.left !== null) {
+                        this.delete(data, node.left)
+                    }
                 }
             }
-            if (data < node.data) {
-                if (node.left !== null) {
-                    if (node.left === data) {
-                        return (node.left = null)
-                    }
-                } else if (node.left === null) {
-                    this.delete(data, node.left)
-                }
-            }
-        } else this.root = new Node(data)
+        }
     }
+
+    deleteWithChildren = (arr, node = this.root) => {}
 }
 
 const tree = new Tree()
@@ -87,4 +84,6 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
     }
 }
 
+prettyPrint(tree.root)
+tree.delete(6345)
 prettyPrint(tree.root)
