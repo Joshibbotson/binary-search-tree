@@ -46,17 +46,30 @@ class Tree {
     }
 
     delete = (data, node = this.root) => {
-        let tempNode
         if (this.root !== null) {
             if (data > node.data) {
                 if (node.right.data === data) {
-                    return (node.right = null)
+                    if (
+                        (node.right.left === null) &
+                        (node.right.right === null)
+                    ) {
+                        return (node.right = null)
+                    } else {
+                        //deleteWithChildren(data, node)//
+                    }
                 }
                 this.delete(data, node.right)
             }
             if (data < node.data) {
                 if (node.left.data === data) {
-                    return (node.left = null)
+                    if (
+                        (node.left.left === null) &
+                        (node.left.right === null)
+                    ) {
+                        return (node.left = null)
+                    } else {
+                        //deleteWithChildren(data, node)//
+                    }
                 }
                 this.delete(data, node.left)
             }
@@ -84,5 +97,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 }
 
 prettyPrint(tree.root)
-tree.delete(324)
+tree.delete(8)
 prettyPrint(tree.root)
