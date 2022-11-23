@@ -45,153 +45,24 @@ class Tree {
         } else this.root = new Node(data)
     }
 
+    find = (data, node = this.root) => {
+        if (data === node.data) {
+            return node
+        }
+        data > node.data
+            ? this.find(data, node.right)
+            : this.find(data, node.left)
+    }
+
     delete = (data, node = this.root) => {
-        if (data === this.root.data) {
-            this.root = this.deleteWithChildren(data, node)
-        } else if (this.root !== null) {
-            if (data > node.data) {
-                if (node.right.data === data) {
-                    if (
-                        (node.right.left === null) &
-                        (node.right.right === null)
-                    ) {
-                        return (node.right = null)
-                    } else {
-                        if (
-                            node.right.right !== null &&
-                            node.right.left !== null
-                        ) {
-                            return (node.right = this.deleteWithChildren(
-                                data,
-                                node.right
-                            ))
-                        } else if (node.right.right && !node.right.left) {
-                            return (node.right = this.deleteWithSingleChild(
-                                data,
-                                node.right,
-                                "right"
-                            ))
-                        } else if (!node.right.right && node.right.left) {
-                            return (node.right = this.deleteWithSingleChild(
-                                data,
-                                node.right,
-                                "left"
-                            ))
-                        }
-                        throw Error("single arm child")
-                    }
-                }
-                this.delete(data, node.right)
-            }
-            if (data < node.data) {
-                if (node.left.data === data) {
-                    if (
-                        (node.left.left === null) &
-                        (node.left.right === null)
-                    ) {
-                        return (node.left = null)
-                    } else {
-                        if (
-                            node.left.right !== null &&
-                            node.left.right !== null
-                        ) {
-                            return (node.left = this.deleteWithChildren(
-                                data,
-                                node.left
-                            ))
-                        } else if (node.left.right && !node.left.left) {
-                            return (node.left = this.deleteWithSingleChild(
-                                data,
-                                node.left,
-                                "right"
-                            ))
-                        } else if (!node.left.right && node.left.left) {
-                            return (node.left = this.deleteWithSingleChild(
-                                data,
-                                node.left,
-                                "left"
-                            ))
-                        }
-                        throw Error("single arm child")
-                    }
-                }
-                this.delete(data, node.left)
-            }
+        if (data === node.data) {
+            node.right === null && node.left === null
+                ? (node = null)
+                : (node = node.right)
+            return node, console.log(node)
         }
-    }
-
-    deleteWithChildren = (data, node = this.root) => {
-        console.log("deleteWithChildren")
-        let tempNode = node
-        let recFindSmallest = node => {
-            if (node.left === null) {
-                return node
-            }
-            node = node.left
-            return recFindSmallest(node)
-        }
-        let smallest = recFindSmallest(node.right)
-        tempNode.data = smallest.data
-
-        let recRemoveDup = (data, node) => {
-            if (data === node.data) {
-                return (node = node.right)
-            }
-            node = node.left
-            return recRemoveDup(data, node)
-        }
-        let replacementNode = recRemoveDup(tempNode.data, tempNode.right)
-        tempNode.right = replacementNode
-        return tempNode
-    }
-
-    //copied from previous code, works to remove single child somewhat//
-    deleteWithSingleChild = (data, node, arm) => {
-        console.log("deleteSinglechild")
-        let tempNode = node
-        let recFindSmallest = node => {
-            if (node.left === null) {
-                return node
-            }
-            node = node.left
-            return recFindSmallest(node)
-        }
-        let smallest
-        if (arm === "right") {
-            // console.log(node)
-            smallest = recFindSmallest(node.right)
-        } else if (arm === "left") {
-            smallest = recFindSmallest(node.left)
-        }
-        tempNode.data = smallest.data
-        // console.log(tempNode)
-
-        let recRemoveDup = (data, node, arm) => {
-            if (data === node.data) {
-                if (arm === "right") {
-                    return (node = node.right)
-                } else if (arm === "left") {
-                    return (node = node.left)
-                }
-            }
-            node = node.left
-            return recRemoveDup(data, node, arm)
-        }
-        let replacementNode
-        if (arm === "right") {
-            console.log("hello right")
-            replacementNode = recRemoveDup(tempNode.data, tempNode.right, arm)
-            tempNode.right = replacementNode
-        } else if (arm === "left") {
-            replacementNode = recRemoveDup(tempNode.data, tempNode.left, arm)
-            tempNode.left = replacementNode
-        }
-        console.log(replacementNode)
-        // console.log(arm)
-        // tempNode.right = replacementNode
-
-        console.log(tempNode)
-        return tempNode
+        let foundNode = this.find(data, this.root)
+        return this.delete(data, foundNode)
     }
 }
 
@@ -213,5 +84,7 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 }
 
 prettyPrint(tree.root)
+tree.find(9)
 tree.delete(67)
+
 prettyPrint(tree.root)
